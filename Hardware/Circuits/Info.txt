@@ -1,0 +1,3 @@
+Using R = 24 kΩ
+
+Assembled 8 circuits on 2016-07-24.
