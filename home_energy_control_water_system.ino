@@ -2,20 +2,11 @@
 
 void setup() {
 	Serial.begin(9600);
-
+	setDeviceTime();
 }
 
 void loop() {
 
-	if (Serial.available()) {
-		processSyncMessage();
-	}
+	// Your code here
 
-	if (timeStatus() == timeNotSet) {
-		Serial.println("waiting for sync message");
-	} else {
-		digitalClockDisplay();
-	}
-
-	delay(1000);
 }

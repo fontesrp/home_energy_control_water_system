@@ -4,4 +4,6 @@
 #include <Time.h>
 #include <TimeLib.h>
 
+void setDeviceTime();
+
 #endif
