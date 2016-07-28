@@ -23,10 +23,28 @@ void loop() {
 	checkHour = hour(checkTime);
 	checkMinute = minute(checkTime);
 
+	Serial.print("main: checkWeekday = ");
+	Serial.print(checkWeekday);
+	Serial.println("");
+	Serial.print("main: checkHour = ");
+	Serial.print(checkHour);
+	Serial.println("");
+	Serial.print("main: checkMinute = ");
+	Serial.print(checkMinute);
+	Serial.println("");
+
 	scheduledState = getScheduledState(checkWeekday, checkHour, checkMinute);
 
-	if (scheduledState == -1) {
-		Serial.println("Error: invalid scheduledState");
+	Serial.print("main: scheduledState = ");
+	Serial.print(scheduledState, DEC);
+	Serial.print("; HIGH = ");
+	Serial.print(HIGH);
+	Serial.print("; LOW = ");
+	Serial.print(LOW);
+	Serial.println("");
+
+	if (scheduledState == 123) {
+		Serial.println("[Error] main: invalid scheduledState");
 	} else {
 		updatePinState(scheduledState);
 	}
