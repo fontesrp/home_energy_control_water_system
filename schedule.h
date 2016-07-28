@@ -7,9 +7,9 @@
 
 struct schedule {
 	int weekday; // 1 = Sunday, ...
-	int hour;    // 0 .. 23
-	int minute;  // 0 .. 59
-	char state;  // ON / OFF
+	int hour;    // 0..23
+	int minute;  // 0..59
+	char state;  // ON/OFF
 } scheduleDates[SCHEDULE_DATES_QTT];
 
 char scheduleSet = 0;
