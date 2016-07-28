@@ -46,7 +46,7 @@ int findIndex(int searchWeekday, int searchHour, int searchMinute) {
 		}
 	}
 
-	if (i > SCHEDULE_DATES_QTT) {
+	if (i == SCHEDULE_DATES_QTT) {
 		return -1;
 	} else {
 		return findTimeIndex(searchWeekday, searchHour, searchMinute, index);
@@ -139,8 +139,24 @@ char getScheduledState(int currentWeekday, int currentHour, int currentMinute) {
 
 	scheduleIndex = findIndex(currentWeekday, currentHour, currentMinute);
 
+	Serial.print("schedule.ino getScheduledState: scheduleIndex = ");
+	Serial.print(scheduleIndex);
+	Serial.println("");
+	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].weekday = ");
+	Serial.print(scheduleDates[scheduleIndex].weekday);
+	Serial.println("");
+	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].hour = ");
+	Serial.print(scheduleDates[scheduleIndex].hour);
+	Serial.println("");
+	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].minute = ");
+	Serial.print(scheduleDates[scheduleIndex].minute);
+	Serial.println("");
+	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].state = ");
+	Serial.print(scheduleDates[scheduleIndex].state, DEC);
+	Serial.println("");
+
 	if (scheduleIndex == -1) {
-		return -1;
+		return 123;
 	} else {
 		return scheduleDates[scheduleIndex].state;
 	}
