@@ -103,7 +103,7 @@ void clearEEPROM(unsigned int firstAddr, unsigned int lastAddr) {
 
 	unsigned int i;
 
-	for (i = firstAddr; i =< lastAddr && i < EEPROM.length(); i++) {
+	for (i = firstAddr; i <= lastAddr && i < EEPROM.length(); i++) {
 		EEPROM.write(i, 0);
 	}
 }
