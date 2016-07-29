@@ -4,7 +4,7 @@ int treatIndex(int index) {
 
 	if (index < 0) {
 		index = SCHEDULE_DATES_QTT - 1;
-	} else if (index > SCHEDULE_DATES_QTT) {
+	} else if (index >= SCHEDULE_DATES_QTT) {
 		index = 0;
 	}
 
