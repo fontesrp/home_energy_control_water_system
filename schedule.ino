@@ -1,6 +1,6 @@
 #include "schedule.h"
 
-int treatIndex(int index) {
+static int treatIndex(int index) {
 
 	if (index < 0) {
 		index = SCHEDULE_DATES_QTT - 1;
@@ -11,7 +11,7 @@ int treatIndex(int index) {
 	return index;
 }
 
-int findTimeIndex(int searchWeekday, int searchHour, int searchMinute, int index) {
+static int findTimeIndex(int searchWeekday, int searchHour, int searchMinute, int index) {
 
 	if (searchWeekday < scheduleDates[index].weekday) {
 		index--;
@@ -33,7 +33,7 @@ int findTimeIndex(int searchWeekday, int searchHour, int searchMinute, int index
 	return treatIndex(index);
 }
 
-int findIndex(int searchWeekday, int searchHour, int searchMinute) {
+static int findIndex(int searchWeekday, int searchHour, int searchMinute) {
 
 	int i, index = 0;
 
@@ -53,7 +53,7 @@ int findIndex(int searchWeekday, int searchHour, int searchMinute) {
 	}
 }
 
-void setScheduleDates() {
+static void setScheduleDates() {
 
 	// Must be organized in ascending order from Sunday 00:00, always with one CIRCUIT_ON for every CIRCUIT_OFF in the same day
 
@@ -138,22 +138,6 @@ char getScheduledState(int currentWeekday, int currentHour, int currentMinute) {
 	}
 
 	scheduleIndex = findIndex(currentWeekday, currentHour, currentMinute);
-
-	Serial.print("schedule.ino getScheduledState: scheduleIndex = ");
-	Serial.print(scheduleIndex);
-	Serial.println("");
-	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].weekday = ");
-	Serial.print(scheduleDates[scheduleIndex].weekday);
-	Serial.println("");
-	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].hour = ");
-	Serial.print(scheduleDates[scheduleIndex].hour);
-	Serial.println("");
-	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].minute = ");
-	Serial.print(scheduleDates[scheduleIndex].minute);
-	Serial.println("");
-	Serial.print("schedule.ino getScheduledState: scheduleDates[scheduleIndex].state = ");
-	Serial.print(scheduleDates[scheduleIndex].state, DEC);
-	Serial.println("");
 
 	if (scheduleIndex == -1) {
 		return 123;

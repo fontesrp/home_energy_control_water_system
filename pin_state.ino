@@ -4,13 +4,6 @@ void updatePinState(char desiredState) {
 
 	int i;
 
-	Serial.print("pin_state.ino updatePinState: currentPinState = ");
-	Serial.print(currentPinState, DEC);
-	Serial.println("");
-	Serial.print("pin_state.ino updatePinState: desiredState = ");
-	Serial.print(desiredState, DEC);
-	Serial.println("");
-
 	if (desiredState != currentPinState) {
 
 		for (i = 0; i < BIPHASIC_CIRCUITS_QTT; i++) {
@@ -26,7 +19,7 @@ void updatePinState(char desiredState) {
 	}
 }
 
-void setCircuits() {
+static void setCircuits() {
 
 	biphasicCircuits[0].pin0 = 2;
 	biphasicCircuits[0].pin1 = 3;

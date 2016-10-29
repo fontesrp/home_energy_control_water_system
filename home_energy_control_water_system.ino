@@ -1,47 +1,29 @@
 #include "header.h"
 
 void setup() {
-
 	Serial.begin(9600);
-
 	initializePins();
-
-	while (timeStatus() == timeNotSet) {
-		setDeviceTime();
-	}
+	setDeviceTime();
 }
 
 void loop() {
 
-	time_t checkTime;
 	int checkWeekday, checkHour, checkMinute;
 	char scheduledState;
 
-	checkTime = now();
+	currentTime(&checkWeekday, &checkHour, &checkMinute);
 
-	checkWeekday = weekday(checkTime);
-	checkHour = hour(checkTime);
-	checkMinute = minute(checkTime);
-
-	Serial.print("main: checkWeekday = ");
-	Serial.print(checkWeekday);
-	Serial.println("");
-	Serial.print("main: checkHour = ");
-	Serial.print(checkHour);
-	Serial.println("");
-	Serial.print("main: checkMinute = ");
-	Serial.print(checkMinute);
-	Serial.println("");
+	Serial.print("main: weekday = ");
+	Serial.println(checkWeekday, DEC);
+	Serial.print("main: hour = ");
+	Serial.println(checkHour, DEC);
+	Serial.print("main: minute = ");
+	Serial.println(checkMinute, DEC);
 
 	scheduledState = getScheduledState(checkWeekday, checkHour, checkMinute);
 
 	Serial.print("main: scheduledState = ");
-	Serial.print(scheduledState, DEC);
-	Serial.print("; HIGH = ");
-	Serial.print(HIGH);
-	Serial.print("; LOW = ");
-	Serial.print(LOW);
-	Serial.println("");
+	Serial.println(scheduledState, DEC);
 
 	if (scheduledState == 123) {
 		Serial.println("[Error] main: invalid scheduledState");
@@ -49,7 +31,7 @@ void loop() {
 		updatePinState(scheduledState);
 	}
 
-	while (checkMinute == minute()) {
+	while (checkMinute == currentMinute()) {
 		delay(1000);
 	}
 }

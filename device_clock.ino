@@ -1,11 +1,24 @@
 #include "device_clock.h"
 
-void storeDeviceTime(time_t deviceTime) {
+int currentMinute() {
+	return minute();
+}
+
+void currentTime(int * weekDay, int * currHour, int * currMinute) {
+
+	time_t currentTime = now();
+
+	*weekDay = weekday(currentTime);
+    *currHour = hour(currentTime);
+    *currMinute = minute(currentTime);
+}
+
+static void storeDeviceTime(time_t deviceTime) {
 
 	unsigned int addr, bytesCount = 0;
 	unsigned char value, charConverter = 0;
 	time_t timeConverter = 0;
-	
+
 	charConverter--; // Char with all bits set to 1
 	timeConverter = charConverter;
 
@@ -24,7 +37,7 @@ void storeDeviceTime(time_t deviceTime) {
 	EEPROM.write(timeAccessQttAddr, 0);
 }
 
-time_t processSyncMessage() {
+static time_t processSyncMessage() {
 
 	// If time sync is available from serial port, read and return its value
 	// Time message consists of header and 10 ASCII digits
@@ -37,36 +50,24 @@ time_t processSyncMessage() {
 
 		syncTime = 0;
 		c = Serial.read();
-		Serial.print("device_clock.ino processSyncMessage: c = ");
-		Serial.print(c);
-		Serial.println("");
 
 		if (c == TIME_HEADER) {
-			
-			for (i = 1; i < TIME_MSG_LEN && (c = Serial.read()); i++) {
 
-				Serial.print("device_clock.ino processSyncMessage: c = ");
-				Serial.print(c);
-				Serial.println("");
+			for (i = 1; i < TIME_MSG_LEN && (c = Serial.read()); i++) {
 
 				if (c >= '0' && c <= '9') {
 					syncTime = 10 * syncTime + (c - '0'); // Convert digits to number
 				} else {
-					Serial.println("[Error] device_clock.ino processSyncMessage: not a valid number");
 					i = TIME_MSG_LEN;
 					syncTime = 0;
 				}
 			}
 
 			if (i < TIME_MSG_LEN) {
-				Serial.println("[Error] device_clock.ino processSyncMessage: entered value has length smaller then TIME_MSG_LEN");
 				syncTime = 0;
-			// } else {
-			// 	return syncTime;
 			}
 
 		} else {
-			Serial.println("[Error] device_clock.ino processSyncMessage: no TIME_HEADER");
 			syncTime = 0;
 		}
 	}
@@ -74,7 +75,7 @@ time_t processSyncMessage() {
 	return syncTime;
 }
 
-time_t getSerialTime() {
+static time_t getSerialTime() {
 
 	time_t serialTime = 0;
 
@@ -83,7 +84,6 @@ time_t getSerialTime() {
 	}
 
 	if (serialTime == 0) {
-		Serial.println("device_clock.ino getSerialTime: waiting for sync message");
 		delay(1000);
 	} else {
 		storeDeviceTime(serialTime);
@@ -92,7 +92,7 @@ time_t getSerialTime() {
 	return serialTime;
 }
 
-time_t readStoredTime() {
+static time_t readStoredTime() {
 
 	unsigned int addr;
 	unsigned char value;
@@ -107,7 +107,7 @@ time_t readStoredTime() {
 	return storedTime;
 }
 
-void clearEEPROM(unsigned int firstAddr, unsigned int lastAddr) {
+static void clearEEPROM(unsigned int firstAddr, unsigned int lastAddr) {
 
 	unsigned int i;
 
@@ -116,7 +116,7 @@ void clearEEPROM(unsigned int firstAddr, unsigned int lastAddr) {
 	}
 }
 
-time_t getStoredTime() {
+static time_t getStoredTime() {
 
 	// Time format: T1234567890. Storing it in the EEPROM in the following manner:
 	// 1st byte: 'T', works as a flag for the presence of stored data;
@@ -130,10 +130,6 @@ time_t getStoredTime() {
 	if (header == TIME_HEADER) {
 
 		accessQtt = EEPROM.read(timeAccessQttAddr);
-
-		Serial.print("device_clock.ino getStoredTime: accessQtt = ");
-		Serial.print(accessQtt);
-		Serial.println("");
 
 		if (accessQtt < EEPROM_MAX_TIME_ACCESSES) {
 			EEPROM.write(timeAccessQttAddr, ++accessQtt);
@@ -152,16 +148,17 @@ void setDeviceTime() {
 
 	time_t deviceTime;
 
-	deviceTime = getStoredTime(); // Get time stored in the EEPROM
+	while (timeStatus() == timeNotSet) {
 
-	while (deviceTime == 0) {
-		deviceTime = getSerialTime(); // Get time from the serial port
+		deviceTime = getStoredTime(); // Get time stored in the EEPROM
+
+		while (deviceTime == 0) {
+			Serial.println("device_clock.ino setDeviceTime: waiting for time input");
+			deviceTime = getSerialTime(); // Get time from the serial port
+			Serial.print("device_clock.ino setDeviceTime: deviceTime = ");
+			Serial.println(deviceTime, DEC);
+		}
+
+		setTime(deviceTime); // Sync Arduino clock
 	}
-
-	Serial.println("device_clock.ino setDeviceTime: Setting Arduino clock");
-	Serial.print("device_clock.ino setDeviceTime: T");
-	Serial.print(deviceTime);
-	Serial.println("");
-
-	setTime(deviceTime); // Sync Arduino clock
 }

@@ -4,15 +4,15 @@
 #define BIPHASIC_CIRCUITS_QTT 3
 #define MONOPHASIC_CIRCUITS_QTT 2
 
-struct biphasic {
+static struct biphasic {
 	char pin0, pin1;
 } biphasicCircuits[BIPHASIC_CIRCUITS_QTT];
 
-struct monophasic {
+static struct monophasic {
 	char pin;
 } monophasicCircuits[MONOPHASIC_CIRCUITS_QTT];
 
-char currentPinState;
-char circuitsSet = 0;
+static char currentPinState;
+static char circuitsSet = 0;
 
 #endif
