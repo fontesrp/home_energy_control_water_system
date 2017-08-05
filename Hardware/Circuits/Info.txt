@@ -1,3 +1,9 @@
 Using R = 24 kΩ
 
 Assembled 8 circuits on 2016-07-24.
+
+Wi-fi references
+https://en.wikipedia.org/wiki/ESP8266
+http://electronut.in/an-iot-project-with-esp8266/
+http://www.instructables.com/id/Getting-Started-with-the-ESP8266-ESP-12/
+https://www.youtube.com/watch?v=9QZkCQSHnko
